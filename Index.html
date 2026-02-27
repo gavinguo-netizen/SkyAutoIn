@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>SKYTROFA 注射引导（竖版H5）</title>
+  <style>
+    :root{
+      /* Palette (approx from Skytrofa quick reference guide) */
+      --bg:#ffffff;
+      --text:#1e2320;
+      --muted:#5b645a;
+      --line:rgba(69,77,65,.18);
+
+      --green:#74B726;          /* primary */
+      --greenDeep:#5a9a18;
+      --magenta:#C32D7E;        /* accent */
+      --danger:#D9423A;         /* warm red close to print-friendly */
+      --warn:#F4B740;
+
+      --panel:#ffffff;
+      --shadow: 0 10px 24px rgba(0,0,0,.08);
+      --radius:16px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height:100vh;
+      padding: 14px 12px 94px;
+    }
+    .app{max-width:460px;margin:0 auto}
+
+    .top{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+      padding: 6px 2px 10px;
+    }
+    .title{margin:0;font-size:18px;line-height:1.2}
+    .subtitle{margin-top:6px;color:var(--muted);font-size:12px;line-height:1.55}
+
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;
+      background: rgba(116,183,38,.10);
+      border:1px solid rgba(116,183,38,.25);
+      color: #2a3a22;
+      font-size:12px;
+    }
+
+    .panel{
+      background: var(--panel);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin: 10px 0;
+    }
+    .h2{font-size:15px;margin:0 0 8px}
+    .small{font-size:12px;color:var(--muted);line-height:1.6}
+    .sep{height:1px;background:var(--line);margin:12px 0}
+
+    .rule{
+      border-left:4px solid rgba(116,183,38,.75);
+      background: rgba(116,183,38,.10);
+      border-radius: 12px;
+      padding:10px 10px 10px 12px;
+      color:#2a3a22;
+      font-size:12px;
+      line-height:1.6;
+      margin-top:10px;
+    }
+    .dangerBox{
+      border-left:4px solid rgba(217,66,58,.85);
+      background: rgba(217,66,58,.08);
+      border-radius: 12px;
+      padding:10px 10px 10px 12px;
+      color:#5a1f1c;
+      font-size:12px;
+      line-height:1.6;
+      margin-top:10px;
+    }
+
+    .btn{
+      width:100%;
+      border:1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      padding: 14px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-size:18px;            /* bigger text */
+      line-height:1.25;
+      user-select:none;
+      box-shadow: 0 2px 10px rgba(0,0,0,.04);
+    }
+    .btn:active{transform: translateY(1px)}
+    .btn.primary{
+      background: linear-gradient(180deg, rgba(116,183,38,.95), rgba(90,154,24,.95));
+      border-color: rgba(90,154,24,.55);
+      color: #fff;
+    }
+    .btn.accent{
+      background: rgba(195,45,126,.10);
+      border-color: rgba(195,45,126,.35);
+      color: #5c1a3b;
+    }
+    .btn.warn{
+      background: rgba(244,183,64,.14);
+      border-color: rgba(244,183,64,.40);
+      color:#3a2a09;
+    }
+    .btn.danger{
+      background: rgba(217,66,58,.10);
+      border-color: rgba(217,66,58,.40);
+      color:#5a1f1c;
+    }
+    .btn.ghost{
+      background: #fff;
+      font-size:14px;
+      padding:10px 10px;
+      box-shadow:none;
+    }
+
+    .row{display:flex;gap:10px}
+    .row > *{flex:1}
+
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+
+    .progress{
+      height:8px;background: rgba(69,77,65,.10);
+      border:1px solid rgba(69,77,65,.14);
+      border-radius:999px;overflow:hidden;
+      margin-top:10px;
+    }
+    .bar{
+      height:100%;width:0%;
+      background: linear-gradient(90deg, rgba(116,183,38,.95), rgba(195,45,126,.80));
+    }
+
+    .stepTitle{font-size:16px;margin:0 0 6px}
+    .list{margin:8px 0 0;padding-left:16px;color:var(--text);font-size:14px;line-height:1.7}
+    .list li{margin:6px 0}
+
+    .kpi{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:12px;margin-top:8px}
+    .kpi b{color:var(--text)}
+
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;
+      background: rgba(69,77,65,.06);
+      border:1px solid rgba(69,77,65,.14);
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .injectHeader{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      margin-bottom:8px;
+    }
+
+    .bottom{
+      position:fixed;left:0;right:0;bottom:0;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(10px);
+      border-top:1px solid var(--line);
+      padding: 10px 12px;
+    }
+    .bottom .inner{max-width:460px;margin:0 auto;display:flex;gap:10px}
+    .toggle{
+      flex:1;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:10px 12px;border-radius:14px;
+      border:1px solid var(--line);
+      background: #fff;
+      cursor:pointer;
+      user-select:none;
+      color:var(--text);
+      font-size:13px;
+    }
+    .dot{
+      width:12px;height:12px;border-radius:999px;
+      background: rgba(69,77,65,.18);
+      border:1px solid rgba(69,77,65,.22);
+      flex:0 0 auto;
+    }
+    .dot.on{background: rgba(116,183,38,.85); border-color: rgba(90,154,24,.85)}
+    .hidden{display:none !important}
+  </style>
+</head>
+
+<body>
+<div class="app">
+  <div class="top">
+    <div>
+      <h1 class="title">SKYTROFA 注射引导</h1>
+      <div class="subtitle">
+        每一步完成后，请等设备发出<b>两次蜂鸣</b>，再点击“我已听到两次蜂鸣”进入下一步。
+      </div>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <span class="chip">白底</span>
+        <span class="chip">默认朗读本步骤</span>
+        <span class="chip">可随时停止朗读</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;min-width:110px">
+      <button class="btn ghost" id="btn-home">首页</button>
+      <button class="btn primary ghost" id="btn-start">开始注射</button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <section id="view-home" class="panel">
+    <div class="h2">开始前</div>
+    <div class="small">
+      H5 不能识别设备蜂鸣声。你在<b>听到两次蜂鸣</b>后，手动点按钮推进即可。
+    </div>
+    <div class="rule">
+      <b>按钮规则：</b>主流程中，绿色按钮只用于<b>开机</b>。<br/>
+      <b>例外：</b>观察到“可见颗粒”时，官方流程要求<b>按住绿色按钮 3 秒</b>进入取出笔芯步骤（页面会单独提示）。
+    </div>
+    <div class="sep"></div>
+    <button class="btn primary" id="btn-go-inject">开始本次注射</button>
+    <div style="height:10px"></div>
+    <button class="btn" id="btn-go-learn">认识设备（一次学会）</button>
+    <div class="sep"></div>
+    <div class="kpi"><span>当前进度</span><b id="kv-step">未开始</b></div>
+    <div class="kpi"><span>语音提示</span><b id="kv-voice">开启</b></div>
+    <div class="kpi"><span>认识设备</span><b id="kv-learn">未标记</b></div>
+    <div class="sep"></div>
+    <div class="row">
+      <button class="btn" id="btn-resume">继续上次</button>
+      <button class="btn warn" id="btn-reset">重置</button>
+    </div>
+  </section>
+
+  <!-- LEARN -->
+  <section id="view-learn" class="panel hidden">
+    <div class="h2">认识设备（一次学会）</div>
+    <div class="small">这部分只需要学一次。之后每次注射直接开始流程即可。</div>
+    <div class="sep"></div>
+    <div class="small"><span class="badge"><span class="mono">Green Top</span> 贴肤触发注射 / 插入笔芯 / 插入针帽释放笔芯</span></div>
+    <div style="height:8px"></div>
+    <div class="small"><span class="badge"><span class="mono">Inspection Window</span> 观察复溶：无色澄清（少量气泡可）</span></div>
+    <div style="height:8px"></div>
+    <div class="small"><span class="badge"><span class="mono">Progress Bar</span> 混匀/排气/注射进度；不直立或离开皮肤可能冻结</span></div>
+    <div style="height:8px"></div>
+    <div class="small"><span class="badge"><span class="mono">Green Button</span> 开机；“可见颗粒”场景按住 3 秒进入取出笔芯</span></div>
+    <div class="sep"></div>
+    <button class="btn primary" id="btn-mark-learn">我学会了（以后不再提示）</button>
+    <div style="height:10px"></div>
+    <button class="btn" id="btn-back-home1">返回首页</button>
+  </section>
+
+  <!-- INJECT -->
+  <section id="view-inject" class="panel hidden">
+    <div class="injectHeader">
+      <div class="small" id="learn-tip">提示：认识设备未标记。你可以稍后再看，不影响本次流程。</div>
+      <button class="btn ghost" id="btn-stop-voice" style="width:auto">停止朗读</button>
+    </div>
+
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="kpi"><span>步骤</span><b id="step-name">未开始</b></div>
+
+    <div class="sep"></div>
+    <div id="content"></div>
+
+    <div class="sep"></div>
+    <button class="btn primary" id="btn-beep">我已听到两次蜂鸣（下一步）</button>
+
+    <div style="height:10px"></div>
+    <div class="row">
+      <button class="btn" id="btn-prev">上一步</button>
+      <button class="btn warn" id="btn-help">卡住/警示音</button>
+    </div>
+
+    <div style="height:10px"></div>
+    <button class="btn danger" id="btn-exit">退出（保存进度）</button>
+  </section>
+
+  <!-- HELP -->
+  <section id="view-help" class="panel hidden">
+    <div class="h2">卡住/警示音（快速处理）</div>
+    <div class="small">常见原因：混匀/排气时未直立，或注射时离开皮肤。调整后回到流程继续。</div>
+    <div class="sep"></div>
+    <div class="rule"><b>混匀/排气卡住：</b>把注射笔<b>直立</b>放好，进度会继续。</div>
+    <div class="rule" style="border-left-color:rgba(195,45,126,.70);background:rgba(195,45,126,.08);color:#5c1a3b">
+      <b>注射卡住：</b>把 <b>Green Top</b> 重新紧贴注射部位，进度会继续。
+    </div>
+    <div class="sep"></div>
+    <button class="btn primary" id="btn-back-inject">返回注射流程</button>
+    <div style="height:10px"></div>
+    <button class="btn" id="btn-back-home2">返回首页</button>
+  </section>
+</div>
+
+<div class="bottom">
+  <div class="inner">
+    <div class="toggle" id="toggle-voice">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="dot on" id="dot-voice"></div>
+        <div>
+          <div style="font-weight:700">语音提示</div>
+          <div class="small" style="margin-top:2px">自动朗读本步骤</div>
+        </div>
+      </div>
+      <div class="mono" id="voice-state">ON</div>
+    </div>
+    <div class="toggle" id="toggle-beep">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="dot on" id="dot-beep"></div>
+        <div>
+          <div style="font-weight:700">蜂鸣推进</div>
+          <div class="small" style="margin-top:2px">手动确认</div>
+        </div>
+      </div>
+      <div class="mono" id="beep-state">ON</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const KEY = "skytrofa_h5_v4_white_theme";
+  const defaultState = {
+    voiceOn: true,
+    beepConfirmOn: true,
+    learnedDevice: false,
+    step: 0, // 0..6
+    timers: { mixEnd: null, injectEnd: null },
+    turns: 0,
+    flaggedParticle: false
+  };
+
+  let state = load();
+  function load(){
+    try{
+      const raw = localStorage.getItem(KEY);
+      if(!raw) return structuredClone(defaultState);
+      const p = JSON.parse(raw);
+      return {...structuredClone(defaultState), ...p, timers: {...defaultState.timers, ...(p.timers||{})}};
+    }catch(e){
+      return structuredClone(defaultState);
+    }
+  }
+  function save(){
+    localStorage.setItem(KEY, JSON.stringify(state));
+    renderHomeKV();
+  }
+
+  // Speech
+  function stopSpeech(){ if("speechSynthesis" in window) window.speechSynthesis.cancel(); }
+  function speak(text){
+    if(!state.voiceOn) return;
+    if(!("speechSynthesis" in window)) return;
+    stopSpeech();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "zh-CN";
+    u.rate = 1.0;
+    u.pitch = 1.0;
+    window.speechSynthesis.speak(u);
+  }
+
+  // Views
+  const V = {
+    home: document.getElementById("view-home"),
+    learn: document.getElementById("view-learn"),
+    inject: document.getElementById("view-inject"),
+    help: document.getElementById("view-help")
+  };
+  function show(name){
+    Object.values(V).forEach(el => el.classList.add("hidden"));
+    V[name].classList.remove("hidden");
+    if(name === "home") renderHomeKV();
+    if(name === "inject") renderInject(true);
+  }
+
+  // Steps
+  const steps = [
+    {
+      name:"开机（Power On）",
+      autoRead: () => [
+        "现在开始开机。",
+        "请按一下并松开绿色按钮。",
+        "你会听到两次蜂鸣，随后绿色顶部开始闪烁。",
+        "听到两次蜂鸣后，点击下一步。"
+      ].join("。") + "。",
+      html: () => `
+        <div>
+          <div class="stepTitle">开机（Power On）</div>
+          <ul class="list">
+            <li>按一下并松开绿色按钮。</li>
+            <li>听到<strong>两次蜂鸣</strong>后点击下一步。</li>
+          </ul>
+          <div class="rule">
+            从下一步开始，主流程不需要再按绿色按钮。只需按提示做，并在听到<strong>两次蜂鸣</strong>后点击下一步。
+          </div>
+        </div>
+      `
+    },
+    {
+      name:"装入针头并置入笔芯（开始复溶）",
+      autoRead: () => [
+        "现在开始装入针头并置入笔芯。",
+        "检查针头和笔芯有效期。",
+        "撕下针头纸封，把针头直上直下拧紧到笔芯上，先不要拔针帽。",
+        "把笔芯插入闪烁的绿色顶部，推到咔哒卡住。",
+        "等待四到八分钟自动复溶。",
+        "听到两次蜂鸣后，点击下一步。"
+      ].join("。") + "。",
+      html: () => `
+        <div>
+          <div class="stepTitle">装入针头并置入笔芯（开始复溶）</div>
+          <ul class="list">
+            <li>检查针头/笔芯有效期；撕下针头纸封。</li>
+            <li>针头<strong>直上直下</strong>拧紧到笔芯上；<strong>先不要拔针帽</strong>。</li>
+            <li>把笔芯插入闪烁的绿色顶部，推到“咔哒”卡住。</li>
+            <li>等待<strong>4–8 分钟</strong>自动复溶。</li>
+          </ul>
+          <div class="sep"></div>
+          <button class="btn accent" id="mix8">启动 8 分钟倒计时</button>
+          <div style="height:10px"></div>
+          <button class="btn accent" id="mix4">启动 4 分钟倒计时</button>
+          <div class="kpi"><span>倒计时</span><b id="mixTimer">未启动</b></div>
+        </div>
+      `
+    },
+    {
+      name:"上下摇匀（5–10 次）",
+      autoRead: () => [
+        "现在开始上下摇匀。",
+        "上下翻转注射笔。听到tick声表示翻转正确。",
+        "建议翻转五到十次。",
+        "听到两次蜂鸣后，点击下一步。"
+      ].join("。") + "。",
+      html: () => `
+        <div>
+          <div class="stepTitle">上下摇匀（5–10 次）</div>
+          <ul class="list">
+            <li>上下翻转注射笔；听到 <span class="mono">tick</span> 声再计数。</li>
+            <li>建议<strong>5–10 次</strong>；听到<strong>两次蜂鸣</strong>后点击下一步。</li>
+          </ul>
+          <div class="sep"></div>
+          <button class="btn accent" id="turnPlus">我完成 1 次翻转（+1）</button>
+          <div style="height:10px"></div>
+          <button class="btn warn" id="turnReset">重置计数</button>
+          <div class="kpi"><span>当前计数</span><b id="turnCount">${state.turns||0} 次</b></div>
+        </div>
+      `
+    },
+    {
+      name:"直立放置（自动排气）",
+      autoRead: () => [
+        "现在开始直立放置进行自动排气。",
+        "把注射笔直立放好，等待自动排气完成。",
+        "听到两次蜂鸣后，点击下一步。"
+      ].join("。") + "。",
+      html: () => `
+        <div>
+          <div class="stepTitle">直立放置（自动排气）</div>
+          <ul class="list">
+            <li>把注射笔<strong>直立</strong>放好。</li>
+            <li>完成后会有<strong>两次蜂鸣</strong>提示。</li>
+          </ul>
+        </div>
+      `
+    },
+
+    /* ✅ Step 4: default show injection instructions; keep “problem stop” option */
+    {
+      name:"取下针帽、观察复溶、开始注射",
+      autoRead: () => [
+        "现在开始取下针帽，观察复溶，并开始注射。",
+        "轻轻拔下针帽，不要旋转，针帽留作备用。",
+        "观察复溶。无色澄清为正常，少量气泡可以接受。",
+        "如果看到可见颗粒，本次中止，按住绿色按钮三秒进入取出笔芯流程。",
+        "选择注射部位并清洁皮肤，不要隔着衣服注射。",
+        "把绿色顶部紧贴皮肤，保持十到十五秒，直到听到两次蜂鸣。",
+        "听到两次蜂鸣后，点击下一步。"
+      ].join("。") + "。",
+      html: () => `
+        <div>
+          <div class="stepTitle">取下针帽、观察复溶、开始注射</div>
+
+          <ul class="list">
+            <li>拔下针帽，<strong>不要旋转</strong>；针帽留作备用。</li>
+            <li>观察复溶：<strong>无色澄清</strong>为正常（少量气泡可）。</li>
+          </ul>
+
+          <div class="sep"></div>
+
+          <!-- Default injection instructions are shown immediately -->
+          <ul class="list">
+            <li>选择注射点（腹部/大腿/臀部），每次轮换。</li>
+            <li>清洁皮肤；<strong>不要隔着衣服注射</strong>。</li>
+            <li>绿色顶部紧贴皮肤，保持 <strong>10–15 秒</strong>，直到听到<strong>两次蜂鸣</strong>。</li>
+          </ul>
+
+          <div class="sep"></div>
+          <button class="btn accent" id="inj15">启动 15 秒计时</button>
+          <div style="height:10px"></div>
+          <button class="btn accent" id="inj10">启动 10 秒计时</button>
+          <div class="kpi"><span>计时</span><b id="injTimer">未启动</b></div>
+
+          <div class="sep"></div>
+
+          <!-- Keep a “stop if problem” option -->
+          <button class="btn danger" id="flagParticle">如果看到可见颗粒：中止本次并取出笔芯</button>
+
+          <div id="particleBox" class="dangerBox hidden">
+            <b>已选择中止：</b>本次不要注射。请<strong>按住绿色按钮 3 秒</strong>进入取出笔芯流程。完成后点击下方按钮继续。
+            <div style="height:10px"></div>
+            <button class="btn danger" id="goRemove">我已按住 3 秒，进入取出笔芯</button>
+          </div>
+        </div>
+      `
+    },
+
+    {
+      name:"注射完成（确认完成提示）",
+      autoRead: () => [
+        "现在开始确认注射完成。",
+        "注射过程中听到两次蜂鸣后，把注射笔离开皮肤。",
+        "等待设备提示注射完成，并看到对勾标志。",
+        "听到两次蜂鸣后，点击下一步。"
+      ].join("。") + "。",
+      html: () => `
+        <div>
+          <div class="stepTitle">注射完成（确认完成提示）</div>
+          <ul class="list">
+            <li>听到<strong>两次蜂鸣</strong>后，把注射笔离开皮肤。</li>
+            <li>等待设备提示完成，并看到<strong>✓</strong>标志（以设备为准）。</li>
+            <li>听到<strong>两次蜂鸣</strong>后点击下一步。</li>
+          </ul>
+        </div>
+      `
+    },
+    {
+      name:"放回针帽、取出笔芯（自动关闭）",
+      autoRead: () => [
+        "现在开始放回针帽并取出笔芯。",
+        "把针帽插回绿色顶部。",
+        "向下压针帽释放笔芯，取出用过笔芯。",
+        "把笔芯与针头放入锐器盒。",
+        "完成后可以结束，或开始第二个笔芯。"
+      ].join("。") + "。",
+      html: () => `
+        <div>
+          <div class="stepTitle">放回针帽、取出笔芯（自动关闭）</div>
+          <ul class="list">
+            <li>把针帽插回绿色顶部。</li>
+            <li>向下压针帽释放笔芯，取出用过笔芯。</li>
+            <li>笔芯与针头放入锐器盒。</li>
+          </ul>
+          <div class="sep"></div>
+          <button class="btn primary" id="done">本次注射完成</button>
+          <div style="height:10px"></div>
+          <button class="btn" id="second">本周需要第二个笔芯（再来一针）</button>
+        </div>
+      `
+    }
+  ];
+
+  const MAX_STEP = steps.length - 1;
+
+  // Timers
+  function startMix(minutes){
+    state.timers.mixEnd = Date.now() + minutes*60*1000;
+    save(); tick();
+  }
+  function startInject(seconds){
+    state.timers.injectEnd = Date.now() + seconds*1000;
+    save(); tick();
+  }
+  function fmt(ms){
+    const s = Math.max(0, Math.floor(ms/1000));
+    const m = Math.floor(s/60);
+    const r = s%60;
+    return `${m}:${String(r).padStart(2,"0")}`;
+  }
+  let timerHandle=null;
+  function startTicker(){ stopTicker(); timerHandle=setInterval(tick, 250); }
+  function stopTicker(){ if(timerHandle){clearInterval(timerHandle);timerHandle=null;} }
+  function tick(){
+    if(V.inject.classList.contains("hidden")) return;
+
+    const mixTimer = document.getElementById("mixTimer");
+    if(mixTimer){
+      if(state.timers.mixEnd){
+        const left = state.timers.mixEnd - Date.now();
+        mixTimer.textContent = left>0 ? fmt(left) : "已到时（如已蜂鸣可推进）";
+      }else mixTimer.textContent = "未启动";
+    }
+    const injTimer = document.getElementById("injTimer");
+    if(injTimer){
+      if(state.timers.injectEnd){
+        const left = state.timers.injectEnd - Date.now();
+        injTimer.textContent = left>0 ? `${Math.max(0,Math.ceil(left/1000))} 秒` : "已到时（如已蜂鸣可推进）";
+      }else injTimer.textContent = "未启动";
+    }
+    const turnCount = document.getElementById("turnCount");
+    if(turnCount) turnCount.textContent = `${state.turns||0} 次`;
+  }
+
+  // Render
+  const kvStep = document.getElementById("kv-step");
+  const kvVoice = document.getElementById("kv-voice");
+  const kvLearn = document.getElementById("kv-learn");
+  function renderHomeKV(){
+    kvStep.textContent = steps[state.step]?.name || "未开始";
+    kvVoice.textContent = state.voiceOn ? "开启" : "关闭";
+    kvLearn.textContent = state.learnedDevice ? "已标记" : "未标记";
+  }
+
+  const learnTip = document.getElementById("learn-tip");
+  const bar = document.getElementById("bar");
+  const stepName = document.getElementById("step-name");
+  const content = document.getElementById("content");
+  function percent(){ return Math.round((state.step / MAX_STEP) * 100); }
+
+  function renderInject(shouldAutoRead){
+    learnTip.classList.toggle("hidden", state.learnedDevice);
+    bar.style.width = percent() + "%";
+    stepName.textContent = steps[state.step].name;
+    content.innerHTML = steps[state.step].html();
+    bindStepHandlers(state.step);
+    startTicker(); tick(); save();
+    if(shouldAutoRead) speak(steps[state.step].autoRead());
+  }
+
+  function bindStepHandlers(i){
+    if(i === 1){
+      document.getElementById("mix8").addEventListener("click", () => {
+        startMix(8);
+        speak("已启动八分钟倒计时。等待设备两次蜂鸣后，点击下一步。");
+      });
+      document.getElementById("mix4").addEventListener("click", () => {
+        startMix(4);
+        speak("已启动四分钟倒计时。等待设备两次蜂鸣后，点击下一步。");
+      });
+    }
+    if(i === 2){
+      document.getElementById("turnPlus").addEventListener("click", () => {
+        state.turns = Math.min(10, (state.turns||0)+1);
+        save(); tick();
+        speak(`已记录一次翻转。当前${state.turns}次。等待两次蜂鸣后，点击下一步。`);
+      });
+      document.getElementById("turnReset").addEventListener("click", () => {
+        state.turns = 0;
+        save(); tick();
+        speak("已重置计数。");
+      });
+    }
+
+    // ✅ Step 4 changed behavior: default show injection; problem option only
+    if(i === 4){
+      const inj15 = document.getElementById("inj15");
+      const inj10 = document.getElementById("inj10");
+      if(inj15) inj15.addEventListener("click", () => {
+        startInject(15);
+        speak("已启动十五秒计时。保持紧贴皮肤直到听到两次蜂鸣。听到两次蜂鸣后点击下一步。");
+      });
+      if(inj10) inj10.addEventListener("click", () => {
+        startInject(10);
+        speak("已启动十秒计时。保持紧贴皮肤直到听到两次蜂鸣。听到两次蜂鸣后点击下一步。");
+      });
+
+      const flag = document.getElementById("flagParticle");
+      const box = document.getElementById("particleBox");
+      const go = document.getElementById("goRemove");
+
+      flag.addEventListener("click", () => {
+        state.flaggedParticle = true;
+        save();
+        box.classList.remove("hidden");
+        speak("现在中止本次注射。请按住绿色按钮三秒进入取出笔芯流程。完成后点击按钮继续。");
+      });
+
+      go.addEventListener("click", () => {
+        state.step = 6;
+        save();
+        renderInject(true);
+      });
+    }
+
+    if(i === 6){
+      document.getElementById("done").addEventListener("click", () => {
+        const keep = { voiceOn: state.voiceOn, beepConfirmOn: state.beepConfirmOn, learnedDevice: state.learnedDevice };
+        state = structuredClone(defaultState);
+        Object.assign(state, keep);
+        save();
+        speak("本次注射已完成。下次可以直接开始本次注射流程。");
+        alert("✅ 已完成。本次进度已重置。");
+        show("home");
+      });
+      document.getElementById("second").addEventListener("click", () => {
+        state.step = 0;
+        state.timers = { mixEnd: null, injectEnd: null };
+        state.turns = 0;
+        state.flaggedParticle = false;
+        save();
+        speak("现在开始第二个笔芯。请按绿色按钮开机。听到两次蜂鸣后点击下一步。");
+        renderInject(false);
+      });
+    }
+  }
+
+  // Wiring
+  document.getElementById("btn-stop-voice").addEventListener("click", () => stopSpeech());
+
+  document.getElementById("btn-home").addEventListener("click", () => { stopSpeech(); show("home"); });
+  document.getElementById("btn-start").addEventListener("click", () => { show("inject"); renderInject(true); });
+
+  document.getElementById("btn-go-inject").addEventListener("click", () => { show("inject"); renderInject(true); });
+  document.getElementById("btn-go-learn").addEventListener("click", () => { stopSpeech(); show("learn"); });
+  document.getElementById("btn-back-home1").addEventListener("click", () => { stopSpeech(); show("home"); });
+  document.getElementById("btn-back-home2").addEventListener("click", () => { stopSpeech(); show("home"); });
+  document.getElementById("btn-back-inject")?.addEventListener("click", () => { show("inject"); renderInject(true); });
+
+  document.getElementById("btn-resume").addEventListener("click", () => { show("inject"); renderInject(true); });
+
+  document.getElementById("btn-reset").addEventListener("click", () => {
+    if(confirm("确定重置进度吗？")){
+      const keep = { voiceOn: state.voiceOn, beepConfirmOn: state.beepConfirmOn, learnedDevice: state.learnedDevice };
+      state = structuredClone(defaultState);
+      Object.assign(state, keep);
+      save();
+      speak("进度已重置。你可以重新开始。");
+      show("home");
+    }
+  });
+
+  document.getElementById("btn-mark-learn").addEventListener("click", () => {
+    state.learnedDevice = true;
+    save();
+    speak("已标记认识设备已学会。以后每次注射可以直接开始流程。");
+    alert("已标记。");
+    show("home");
+  });
+
+  document.getElementById("btn-beep").addEventListener("click", () => {
+    if(!state.beepConfirmOn){
+      speak("蜂鸣推进已关闭。你可以在底部开启。");
+      return;
+    }
+    if(state.step < MAX_STEP){
+      state.step += 1;
+      save();
+      renderInject(true);
+    }else{
+      speak("已经是最后一步。");
+    }
+  });
+
+  document.getElementById("btn-prev").addEventListener("click", () => {
+    if(state.step > 0){
+      state.step -= 1;
+      save();
+      renderInject(true);
+    }else{
+      speak("已经在第一步。");
+    }
+  });
+
+  document.getElementById("btn-help").addEventListener("click", () => {
+    stopSpeech();
+    show("help");
+    speak("现在开始处理卡住或警示音。先检查是否直立，注射时是否紧贴皮肤。处理后返回继续。");
+  });
+
+  document.getElementById("btn-exit").addEventListener("click", () => {
+    save();
+    stopTicker();
+    speak("已保存进度。你可以稍后继续。");
+    show("home");
+  });
+
+  // toggles
+  const dotVoice = document.getElementById("dot-voice");
+  const dotBeep = document.getElementById("dot-beep");
+  const voiceState = document.getElementById("voice-state");
+  const beepState = document.getElementById("beep-state");
+
+  function renderToggles(){
+    dotVoice.classList.toggle("on", !!state.voiceOn);
+    dotBeep.classList.toggle("on", !!state.beepConfirmOn);
+    voiceState.textContent = state.voiceOn ? "ON" : "OFF";
+    beepState.textContent = state.beepConfirmOn ? "ON" : "OFF";
+    renderHomeKV();
+  }
+
+  document.getElementById("toggle-voice").addEventListener("click", () => {
+    state.voiceOn = !state.voiceOn;
+    save(); renderToggles();
+    if(state.voiceOn) speak("语音提示已开启。进入步骤时会自动朗读。");
+    else stopSpeech();
+  });
+
+  document.getElementById("toggle-beep").addEventListener("click", () => {
+    state.beepConfirmOn = !state.beepConfirmOn;
+    save(); renderToggles();
+    speak(state.beepConfirmOn ? "蜂鸣推进已开启。" : "蜂鸣推进已关闭。");
+  });
+
+  function init(){
+    renderToggles();
+    renderHomeKV();
+    show("home");
+  }
+  init();
+})();
+</script>
+</body>
+</html>
